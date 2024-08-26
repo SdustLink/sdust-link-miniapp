@@ -18,7 +18,7 @@
       </view>
 
       <!-- 课程正常 -->
-      <view wx:if="{{requestflag==2&&courseflag&&set_schedule.islogin}}" class="lookcourselist">
+      <view wx:if="{{requestflag>=1&&courseflag&&set_schedule.islogin}}" class="lookcourselist">
 
         <view class="crousetime_begin">{{timeTable[coursetimei].timebegin}}</view>
         <view class="crousetime_end">{{timeTable[coursetimei].timeend}}</view>
@@ -27,7 +27,7 @@
         <view class="crouse_teacher">{{tools.substring(now_course[2],0,6)}}</view>
       </view>
       <!-- 课程结束 -->
-      <view wx:if="{{requestflag==2&&!courseflag&&set_schedule.islogin}}" class="lookcourselist">
+      <view wx:if="{{requestflag>=1&&!courseflag&&set_schedule.islogin}}" class="lookcourselist">
 
         <view class="crouse_name" style="position: absolute; left: 61rpx; top: 36rpx; width: 325rpx; height: 44rpx; display: block; box-sizing: border-box">今日的课程结束啦！</view>
         <view class="crouse_teacher" style="position: absolute; left: 60rpx; top: 85rpx; width: 325rpx; height: 45rpx; display: block; box-sizing: border-box; font-size: inherit">
@@ -44,7 +44,7 @@
         </view>
       </view>
       <!-- 请求失败 -->
-      <view wx:if="{{requestflag!=2&&set_schedule.islogin}}" class="lookcourselist" catchtap="turn_bind">
+      <view wx:if="{{requestflag<1&&set_schedule.islogin}}" class="lookcourselist" catchtap="turn_bind">
 
         <view class="crouse_name" style="position: absolute; left: 61rpx; top: 36rpx; width: 325rpx; height: 44rpx; display: block; box-sizing: border-box">
           请求失败了....</view>

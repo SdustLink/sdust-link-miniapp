@@ -58,19 +58,35 @@ App({
               success: (res) => {
                 that.globalData.current_time = res.data
 
-                if (that.globalData.current_time["zc"] == null) {
-                  that.globalData.week_time = 20
-                }
-                else {
-                  that.globalData.week_time = res.data["zc"]
-                }
+                console.log(that.globalData.current_time)
+                if (that.globalData.current_time["zc"] === null &&  that.globalData.current_time["xnxqh"] === null) {
+                  const currentDate = new Date();
+                  const currentMonth = currentDate.getMonth() + 1;
+                  const currentYear = currentDate.getFullYear();
+                  
+                  let academicYear, semester;
+                  
+                  if (currentMonth >= 8 || currentMonth <= 1) {
+                    academicYear = currentMonth >= 8 ? currentYear : currentYear - 1;
+                    semester = 1;
+                  } else {
+                    academicYear = currentYear - 1;
+                    semester = 2;
+                  }
+                  that.globalData.week_time = 1
+                  res={
+                    zc: 1,
+                    xnxqh: `${academicYear}-${academicYear + 1}-${semester}`
+                  };
+                  console.log('1111111111111',res)
+                } 
                 // 请求课表数据
                 wx.request({
                   url: 'https://jwgl.sdust.edu.cn/app.do',
                   method: 'GET',
                   data: {
                     method: "getKbcxAzc",
-                    xnxqid: res.data["xnxqh"],
+                    xnxqid: that.globalData.current_time["xnxqh"],
                     zc: that.globalData.week_time,
                     xh: account
                   },
@@ -234,8 +250,7 @@ App({
       "https://www.sxksxk.work/static/schedule/20.png",
       "https://www.sxksxk.work/static/schedule/21.png",
     ],
-    // TotalUrl:"https://www.sxksxk.work",
-    TotalUrl: "http://127.0.0.1:8000",
+    TotalUrl:"https://www.sxksxk.work",
 
     //备忘录部分全局变量声明
     //01 未设置时间的事件

@@ -1,402 +1,256 @@
-// token是强智的token，一般放在头文件里；tokentoset是后端的token，一般放在请求参数里
-
 const shareapi = require('../API/shareapi');
 const apiUrl = "https://jwgl.sdust.edu.cn/app.do";
-// 基础强智API
-const app = getApp()
-function login(account, password) {
-  return new Promise((resolve, reject) => {
-    wx.request({
-      url: apiUrl,
-      method: "GET",
-      data: {
-        method: "authUser",
-        xh: account,
-        pwd: password
-      },
-      header: {
-        "Referer": "http://www.baidu.com",
-        "Accept-encoding": "gzip, deflate, br",
-        "Accept-language": "zh-CN,zh-TW;q=0.8,zh;q=0.6,en;q=0.4,ja;q=0.2",
-        "Cache-control": "max-age=0"
-      },
-      success: function (res) {
-        if (res.statusCode == 200 && res.data.flag == "1") {
-          resolve(res.data.token);
-        } else {
-          reject(res);
-        }
-      },
-      fail: function (res) {
-        reject(res);
-      }
-    });
-  });
-}
+const app = getApp();
 
-function getHandle(params) {
+// Helper function for making API requests
+async function makeRequest(url, method, data, headers = {}) {
   return new Promise((resolve, reject) => {
     wx.request({
-      url: apiUrl,
-      method: "GET",
-      data: params,
+      url,
+      method,
+      data,
       header: {
         "Referer": "http://www.baidu.com",
         "Accept-encoding": "gzip, deflate, br",
         "Accept-language": "zh-CN,zh-TW;q=0.8,zh;q=0.6,en;q=0.4,ja;q=0.2",
         "Cache-control": "max-age=0",
-        token: wx.getStorageSync('token')
+        ...headers
       },
-      success: function (res) {
-        if (res.statusCode == 200) {
+      success: (res) => {
+        if (res.statusCode === 200) {
           resolve(res.data);
         } else {
-          reject(res);
+          reject(new Error(`Request failed with status ${res.statusCode}`));
         }
       },
-      fail: function (res) {
-        reject(res);
-      }
+      fail: reject
     });
   });
 }
 
-function getStudentInfo(account) {
-  const params = {
+// Login function
+async function login(account, password) {
+  const data = {
+    method: "authUser",
+    xh: account,
+    pwd: password
+  };
+  const response = await makeRequest(apiUrl, "GET", data);
+  if (response.flag === "1") {
+    return response.token;
+  } else {
+    throw new Error("Login failed");
+  }
+}
+
+// Get student info
+async function getStudentInfo(account) {
+  const data = {
     method: "getUserInfo",
     xh: account
   };
-  return getHandle(params);
+  return makeRequest(apiUrl, "GET", data, { token: wx.getStorageSync('token') });
 }
 
-function getCurrentTime() {
+// Get current time
+async function getCurrentTime() {
   const params = {
     method: "getCurrentTime",
     currDate: new Date().toISOString().slice(0, 10)
   };
-  return getHandle(params);
+  try {
+    const res = await makeRequest(apiUrl, "GET", params, { token: wx.getStorageSync('token') });
+    if (res.zc === null && res.s_time === null && res.xnxqh === null) {
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth() + 1;
+      const currentYear = currentDate.getFullYear();
+      
+      let academicYear, semester;
+      
+      if (currentMonth >= 8 || currentMonth <= 1) {
+        academicYear = currentMonth >= 8 ? currentYear : currentYear - 1;
+        semester = 1;
+      } else {
+        academicYear = currentYear - 1;
+        semester = 2;
+      }
+      return {
+        zc: 1,
+        xnxqh: `${academicYear}-${academicYear + 1}-${semester}`
+      };
+    } else {
+      return res;
+    }
+  } catch (error) {
+    console.error("Error getting current time:", error);
+    throw error;
+  }
 }
 
-function getClassInfo(account, xnxqh, zc = 1) {
-
-  const params = {
+// Get class info
+async function getClassInfo(account, xnxqh, zc = 1) {
+  const data = {
     method: "getKbcxAzc",
     xnxqid: xnxqh,
     zc: zc,
     xh: account
   };
-  return getHandle(params);
-
+  return makeRequest(apiUrl, "GET", data, { token: wx.getStorageSync('token') });
 }
 
-function getClassroomInfo(idleTime) {
-  const params = {
+// Get classroom info
+async function getClassroomInfo(idleTime) {
+  const data = {
     method: "getKxJscx",
     time: new Date().toISOString().slice(0, 10),
     idleTime: idleTime
   };
-  return getHandle(params);
+  return makeRequest(apiUrl, "GET", data, { token: wx.getStorageSync('token') });
 }
 
-function getGradeInfo(account, sy = "") {
-  const params = {
+// Get grade info
+async function getGradeInfo(account, sy = "") {
+  const data = {
     method: "getCjcx",
     xh: account,
     xnxqid: sy
   };
-  return getHandle(params);
+  return makeRequest(apiUrl, "GET", data, { token: wx.getStorageSync('token') });
 }
 
-function getExamInfo(account) {
-  const params = {
+// Get exam info
+async function getExamInfo(account) {
+  const data = {
     method: "getKscx",
     xh: account
   };
-  return getHandle(params);
+  return makeRequest(apiUrl, "GET", data, { token: wx.getStorageSync('token') });
 }
 
-// 从强智系统登录
-function init_data(account, pwd) {
-  
-  if (wx.getStorageSync('islogin') == true) {
-    app.globalData.todatabasesflag=0;
-    app.globalData.requestflag=0;
-    var account=wx.getStorageSync('useraccount')
-    var pwd=wx.getStorageSync('userpws');
+// Initialize data
+async function init_data(account, pwd) {
+  if (wx.getStorageSync('islogin') === true) {
+    app.globalData.todatabasesflag = 0;
+    app.globalData.requestflag = 0;
+    account = wx.getStorageSync('useraccount');
+    pwd = wx.getStorageSync('userpws');
 
-    //客户端登录
-      wx.request({
-        url: 'https://jwgl.sdust.edu.cn/app.do',
-        method: 'GET',
-        data: {
-          "method": "authUser",
-          "xh": account,
-          "pwd": pwd
-        },
-        header: {
-    
-          "Referer": "http://www.baidu.com",
-          "Accept-encoding": "gzip, deflate, br",
-          "Accept-language": "zh-CN,zh-TW;q=0.8,zh;q=0.6,en;q=0.4,ja;q=0.2",
-          "Cache-control": "max-age=0",
-          token: wx.getStorageSync('token')
-        },
-        success: (res) => {
-          if (res.data["flag"] != "1") {
-            wx.showToast({
-              title: '登录失败',
-              icon: "error"
-            });
-            wx.setStorageSync('islogin', false);
-          } else {
-    
-            wx.setStorageSync('token', res.data["token"]);
-            only_data(account)
-    
-          }
-        },
-        fail: (res) => {
-          app.globalData.requestflag = 0
-          app.globalData.todatabasesflag = 0
-        }
-      })
-      
-
-
-
-  }
-  else{
+    try {
+      const loginResponse = await login(account, pwd);
+      wx.setStorageSync('token', loginResponse);
+      await only_data(account);
+    } catch (error) {
+      console.error("Login failed:", error);
+      wx.showToast({
+        title: '登录失败',
+        icon: "error"
+      });
+      wx.setStorageSync('islogin', false);
+    }
+  } else {
     wx.navigateTo({
       url: "../pages/Login/LoginContent/logincontent"
-      //登录
-    })
+    });
   }
-  
- 
-
 }
-// 从强智系统获取时间信息，学生信息，课表信息并在后端登录并发送学生信息至后端
-function only_data(account) {
 
-      //请求时间信息然后请求课表信息
-      wx.request({
-        url: 'https://jwgl.sdust.edu.cn/app.do',
-        method: 'get',
-        data: {
-          method: "getCurrentTime",
-          currDate: new Date().toISOString().slice(0, 10)
-        },
-        header: {
+// Get and process data
+async function only_data(account) {
+  try {
+    const timeInfo = await getCurrentTime();
+    app.globalData.current_time = timeInfo;
+    app.globalData.week_time = timeInfo.zc || 20;
 
-          "Referer": "http://www.baidu.com",
-          "Accept-encoding": "gzip, deflate, br",
-          "Accept-language": "zh-CN,zh-TW;q=0.8,zh;q=0.6,en;q=0.4,ja;q=0.2",
-          "Cache-control": "max-age=0",
-          token: wx.getStorageSync('token')
-        },
-        success: (res) => {
-          app.globalData.current_time = res.data
+    const classInfo = await getClassInfo(account, timeInfo.xnxqh, app.globalData.week_time);
+    app.globalData.requestflag++;
+    const tableformat = require('../utils/table');
+    app.globalData.class_info = tableformat.processTableOrd(classInfo);
+    app.globalData.table_ord = classInfo;
 
-          if (app.globalData.current_time["zc"] == null) {
-            app.globalData.week_time = 20
-          }
-          else {
-            app.globalData.week_time = res.data["zc"]
-          }
-        
-    
-          // 请求课表数据
-          wx.request({
-            url: 'https://jwgl.sdust.edu.cn/app.do',
-            method: 'GET',
-            data: {
-              method: "getKbcxAzc",
-              xnxqid: res.data["xnxqh"],
-              zc: res.data["zc"],
-              xh: account
-            },
-            header: {
-              "Referer": "http://www.baidu.com",
-              "Accept-encoding": "gzip, deflate, br",
-              "Accept-language": "zh-CN,zh-TW;q=0.8,zh;q=0.6,en;q=0.4,ja;q=0.2",
-              "Cache-control": "max-age=0",
-              token: wx.getStorageSync('token')
-            },
-            success: (res) => {
+    const studentInfo = await getStudentInfo(account);
+    if (studentInfo.token === "-1") {
+      wx.setStorageSync('islogin', false);
+      throw new Error("Invalid student info");
+    }
+    app.globalData.student_info = studentInfo;
+    app.globalData.requestflag++;
 
-              // 将课表传输到schedule_table
-                app.globalData.requestflag++;
-                var resjson=res.data;
-                const tableformat = require('../utils/table');
-                app.globalData.class_info = tableformat.processTableOrd(resjson);
-                app.globalData.table_ord=resjson;
-          
-   
-            }
-          })
-        }
-      })
-      //请求学生信息
-      wx.request({
-        url: "https://jwgl.sdust.edu.cn/app.do",
-        method: 'GET',
-        data: {
-          method: "getUserInfo",
-          xh: account
-        },
+    const loginResponse = await makeRequest(
+      `${app.globalData.TotalUrl}/qz/login-info/`,
+      'POST',
+      {
+        code: "wxdb4a3a20947d7c4a",
+        snumber: studentInfo.xh,
+        name: studentInfo.xm,
+        classname: studentInfo.bj,
+        majorname: studentInfo.zymc,
+        collegename: studentInfo.yxmc,
+        enteryear: studentInfo.rxnf,
+        gradenumber: studentInfo.usertype,
+      }
+    );
 
-        header: {
-          "Referer": "http://www.baidu.com",
-          "Accept-encoding": "gzip, deflate, br",
-          "Accept-language": "zh-CN,zh-TW;q=0.8,zh;q=0.6,en;q=0.4,ja;q=0.2",
-          "Cache-control": "max-age=0",
-          token: wx.getStorageSync('token')
-        },
-        success: (res) => {
-          if (res.data["token"] == "-1") {
-            wx.setStorageSync('islogin', false);
-          }
-          app.globalData.student_info = res.data
-          app.globalData.requestflag++;
-          var content=res.data
-       
-    
-               //wx.login获取code。
-                //发起网络请求
-                wx.request({
-                  url: app.globalData.TotalUrl+'/qz/login-info/',
-                  method:'POST',
-                  //向后端发送的数据
-                  data: {
-                    code: "wxdb4a3a20947d7c4a",    //将code发送到后台服务器。
-                    snumber: content["xh"],  //替换为实际的账号值
-                    name: content["xm"],        //替换为实际的姓名值
-                    classname: content["bj"], //替换为实际的班级名值
-                    majorname: content["zymc"], //替换为实际的专业名值
-                    collegename: content["yxmc"], //替换为实际的学院名值
-                    enteryear: content["rxnf"], //替换为实际的入学年份值
-                    gradenumber: content["usertype"], //替换为实际的年级号值
-                  },
-                  header: { 
-                    "Referer": "http://www.baidu.com",
-                    "Accept-encoding": "gzip, deflate, br",
-                    "Accept-language": "zh-CN,zh-TW;q=0.8,zh;q=0.6,en;q=0.4,ja;q=0.2",
-                    "Cache-control": "max-age=0",
-                }, success: (res) => {
-                  
-                  
-                  if(res.data['status']=="success"){
-                    app.globalData.todatabasesflag++;
-                    wx.setStorageSync('tokentoset', res.data["token"]);
-                  }
-               
-                
-                }
-                })
-               
-            
-            
-      
-        }
-        
-      })
-
+    if (loginResponse.status === "success") {
+      app.globalData.todatabasesflag++;
+      wx.setStorageSync('tokentoset', loginResponse.token);
+    }
+  } catch (error) {
+    console.error("Error in only_data:", error);
+    // Handle the error appropriately
   }
-// 发送课程信息至后端
-function postclass(week_ordinal=app.globalData.week_time,table_ord=app.globalData.table_ord) {
-  if(!table_ord){
+}
+
+// Post class info to backend
+async function postclass(week_ordinal = app.globalData.week_time, table_ord = app.globalData.table_ord) {
+  if (!table_ord) {
     wx.showToast({
       title: '强智未返回课表',
       icon: "error"
     });
+    return;
   }
-  wx.request({
-    url: app.globalData.TotalUrl+'/qz/class-info/',
-    method:'POST',
-    //向后端发送的数据
-    data: {
-      table_ord : table_ord,
-      token :  wx.getStorageSync('tokentoset'),
-      snumber: wx.getStorageSync('useraccount'),
-      week:week_ordinal
-    },
-    header: { 
-      "Referer": "http://www.baidu.com",
-      "Accept-encoding": "gzip, deflate, br",
-      "Accept-language": "zh-CN,zh-TW;q=0.8,zh;q=0.6,en;q=0.4,ja;q=0.2",
-      "Cache-control": "max-age=0",
-  }, success: (res) => {
-    if(res.data['status']=="success")app.globalData.todatabasesflag++;
-    
-  
+
+  try {
+    const response = await makeRequest(
+      `${app.globalData.TotalUrl}/qz/class-info/`,
+      'POST',
+      {
+        table_ord: table_ord,
+        token: wx.getStorageSync('tokentoset'),
+        snumber: wx.getStorageSync('useraccount'),
+        week: week_ordinal
+      }
+    );
+
+    if (response.status === "success") {
+      app.globalData.todatabasesflag++;
+    }
+  } catch (error) {
+    console.error("Error posting class info:", error);
+    // Handle the error appropriately
   }
-  })
 }
 
-// 读取第n周课程信息并存储至后端
-function getpostclass(week_ordinal) {
-// 从强智系统读取第week_ordinal周课程信息
-  wx.request({
-    url: 'https://jwgl.sdust.edu.cn/app.do',
-    method: 'GET',
-    data: {
-      method: "getKbcxAzc",
-      xnxqid: app.globalData.current_time["xnxqh"],
-      zc: week_ordinal,
-      xh: wx.getStorageSync('useraccount')
-    },
-    header: {
-      "Referer": "http://www.baidu.com",
-      "Accept-encoding": "gzip, deflate, br",
-      "Accept-language": "zh-CN,zh-TW;q=0.8,zh;q=0.6,en;q=0.4,ja;q=0.2",
-      "Cache-control": "max-age=0",
-      token: wx.getStorageSync('token')
-    },
-    success: (res) => {
-      if (res.statusCode == 200){
-      // 发送课程信息至后端
-      wx.request({
-        url: app.globalData.TotalUrl+'/qz/class-info/',
-        method:'POST',
-        //向后端发送的数据
-        data: {
-          table_ord : res.data,
-          token :  wx.getStorageSync('tokentoset'),
-          snumber: wx.getStorageSync('useraccount'),
-          week:week_ordinal
-        },
-        header: { 
-          "Referer": "http://www.baidu.com",
-          "Accept-encoding": "gzip, deflate, br",
-          "Accept-language": "zh-CN,zh-TW;q=0.8,zh;q=0.6,en;q=0.4,ja;q=0.2",
-          "Cache-control": "max-age=0",
-      }, success: (res) => {
-       
-        
-      
-      }
-      })
+// Get and post class info for a specific week
+async function getpostclass(week_ordinal) {
+  try {
+    const classInfo = await getClassInfo(
+      wx.getStorageSync('useraccount'),
+      app.globalData.current_time.xnxqh,
+      week_ordinal
+    );
 
-      }
-
-    }
-  })
+    await postclass(week_ordinal, classInfo);
+  } catch (error) {
+    console.error("Error in getpostclass:", error);
+    // Handle the error appropriately
+  }
 }
 
-// 从强智系统读取考试信息
-function getexam() {
-
-  return new Promise((resolve, reject) => {
-    getExamInfo(wx.getStorageSync('useraccount')).then(res => {
-      // 返回读取的考试数据
-     resolve(res);
-    }
-    )
-  });
-
+// Get exam info
+async function getexam() {
+  return getExamInfo(wx.getStorageSync('useraccount'));
 }
-
-
 
 module.exports = {
   login,

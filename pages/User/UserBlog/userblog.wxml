@@ -1,6 +1,17 @@
 <view style=" width: 100vw;height: 100vh;justify-content: start;display: flex;flex-direction: column;align-items: center;">
 	<view class="card">
 		<view class="card-details ">
+			<view class="text-title">2024.8.26 暑假结束</view>
+			<view class="text-body " style="color: rgb(68, 68, 68); font-weight:normal;">
+				<li> 1. 暑假结束，继续上班。整个暑假做了很多事情，也发布了第二款作品uTools的插件EveryoneWrite。在我的视野里<span class="black" style="color:seagreen;">AI正在快速的改变这个世界</span>。</li>
+				<li> 2. 定了一个两年计划，从22到24应该都会一直去认真的做独立开发。所以如果<span class="black" style="color:seagreen;">您对山小科有什么建议或需求可以加群聊一下</span>。🤗</li>					
+				<li> 3. 临时修复了暑假查询课表失败的bug，<span class="black" style="color:seagreen;">正在重构代码后端🙇🏻</span>。</li>					
+
+			</view>
+		</view>
+	</view>
+	<view class="card">
+		<view class="card-details ">
 			<view class="text-title">2024.6.17 记得测试</view>
 			<view class="text-body " style="color: rgb(68, 68, 68); font-weight:normal;">
 				<li> 1. 跑了<span class="black" style="color:seagreen;">压力测试</span>，重构了<span class="black" style="color:seagreen;">后端代码</span>，让它更快了。</li>
