@@ -1,32 +1,29 @@
 <!--pages/Function/GradeFind/GradeFindContent/gradefindcontent.wxml-->
 <view class="flex-col grade_page">
-<!-- 成绩查询及图标 -->
+  <!-- 成绩查询及图标 -->
   <view class="flex-row items-center group space-x-6">
-    <image
-      class="image"
-      src="../../../../static/icon/Guide/guide-icon.png"
-    />
+    <image class="image" src="../../../../static/icon/Guide/guide-icon.png" />
     <view class="text">成绩查询</view>
     <view class="font5" wx:if="{{score.W_GPA>=3.9}}">学霸✧*｡ (ˊᗜˋ*) ✧*｡
-</view>
+    </view>
   </view>
-<!-- 学分绩点显示栏 -->
+  <!-- 学分绩点显示栏 -->
   <view class="division"></view>
   <view class="flex-col section_2 space-y-34">
     <!-- 学期加文字 -->
     <view class="part1">
-      <picker class="font1" mode="selector" range="{{termList}}" bindchange="onTermConfirm" value="{{term_index[0]}}" style="display: flex;align-items: center;margin-top: 12%; " wx:if="{{!is_open_status}}">{{termList[term_index[0]]}}</picker>
-      <picker class="font1" mode="selector" range="{{termList}}" bindchange="onTermConfirm" value="{{term_index[0]}}" style="display: flex;align-items: center;margin-top: 10%;" wx:if="{{is_open_status}}" data-id="1">{{termList[term_index[0]]}}</picker>
-      <picker class="font1" mode="selector" range="{{termList}}" bindchange="onTermConfirm" value="{{term_index[1]}}" wx:if="{{is_open_status}}" style="display: flex;align-items: center;margin-top: 1vh;" data-id="2">{{termList[term_index[1]]}}</picker>
+      <picker class="font1" mode="selector" range="{{termList}}" bindchange="onTermConfirm" value="{{term_index[0]}}" style="white-space: nowrap;display: flex;align-items: center;margin-top: 12%; " wx:if="{{!is_open_status}}">{{termList[term_index[0]]}}</picker>
+      <picker class="font1" mode="selector" range="{{termList}}" bindchange="onTermConfirm" value="{{term_index[0]}}" style="white-space: nowrap;display: flex;align-items: center;margin-top: 10%;" wx:if="{{is_open_status}}" data-id="1">{{termList[term_index[0]]}}</picker>
+      <picker class="font1" mode="selector" range="{{termList}}" bindchange="onTermConfirm" value="{{term_index[1]}}" wx:if="{{is_open_status}}" style="white-space: nowrap;display: flex;align-items: center;margin-top: 1vh;" data-id="2">{{termList[term_index[1]]}}</picker>
       <view class="font2" style="display: flex;align-items: center;font-size: 4vw;" wx:if="{{!is_open_status}}">੭ ᐕ)੭*⁾⁾
-</view>
+      </view>
     </view>
     <!-- 中间颜文字 -->
     <view class="part2" bindtap="onSwitchChange">
       <view class="expression">
-        <view class="image1 justify_style" >('ヮ')
+        <view class="image1 justify_style">('ヮ')
         </view>
-        <view class="font3 justify_style" >不要按我哦</view>
+        <view class="font3 justify_style">不要按我哦</view>
 
       </view>
     </view>
@@ -38,7 +35,7 @@
     </view>
   </view>
   <view class="division"></view>
-<!-- 课程成绩显示栏 -->
+  <!-- 课程成绩显示栏 -->
   <scroll-view class="scroll_part" scroll-y wx:if="{{current_list.length>0}}" enhanced show-scrollbar="false">
     <view wx:for="{{current_list}}" wx:key="index" class="class_list" wx:if="{{current_list.length>0}}">
       <!-- 课程成绩信息  -->

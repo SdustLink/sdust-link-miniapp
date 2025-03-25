@@ -16,14 +16,14 @@ Page({
             backgroundcolor: '#5374A5;',
             shadow:'0px 10px 20px rgba(102, 125, 159, 0.2);'
           },
-          {
-            src:'/image/jishiben.jpg',
-            name:'小科放映室',
-            id:1,
-            detail:'不如，看场电影吧。',
-            backgroundcolor: '#00C67E;',
-            shadow:'0px 10px 20px rgba(36, 209, 147, 0.2);'
-          }
+          // {
+          //   src:'/image/jishiben.jpg',
+          //   name:'小科放映室',
+          //   id:1,
+          //   detail:'不如，看场电影吧。',
+          //   backgroundcolor: '#00C67E;',
+          //   shadow:'0px 10px 20px rgba(36, 209, 147, 0.2);'
+          // }
       // ,
           // {
           //   src:'/image/jishiben.jpg',

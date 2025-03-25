@@ -4,7 +4,6 @@ App({
 
 
   onLaunch() {
-
     var that = this;
 
     //请求基础数据-app.js不好封装
@@ -80,6 +79,9 @@ App({
                   };
                   console.log('1111111111111',res)
                 } 
+                else{
+                  that.globalData.week_time = that.globalData.current_time["zc"]
+                }
                 // 请求课表数据
                 wx.request({
                   url: 'https://jwgl.sdust.edu.cn/app.do',
@@ -175,7 +177,6 @@ App({
               }
 
             })
-
           }
         },
         fail: (res) => {

@@ -1,12 +1,81 @@
-<view style=" width: 100vw;height: 100vh;justify-content: start;display: flex;flex-direction: column;align-items: center;">
+<view class="page-container" >
+<block  wx:if="{{!died}}">
+	<view class="card">
+		<view class="card-details ">
+			<view class="text-title">2024.10.12 大版本更新前摇</view>
+			<view class="text-body " style="color: rgb(68, 68, 68); font-weight:normal;">
+				<li> 1. 强智系统不开放API了，具体可以看山科小站公众号🧑🏻‍🔧。</li>
+				<li> 2. 最近在做我的新应用HugLang，你可以在公众号的文章看到我与山小科的未来👋！</li>
+				<li> 3. 山小科接下来会更新一个新的大版本，强智API我觉得八成修复无望🤗。尽情期待！且听龙吟！提头来见！</li>
+		
+			</view>
+		</view>
+	</view>
+	<view class="card">
+		<view class="card-details ">
+			<view class="text-title">2024.9.8 优化了用户体验</view>
+			<view class="text-body " style="color: rgb(68, 68, 68); font-weight:normal;">
+				<li> 1. 修复了食物库的操作逻辑和用户体验。</li>
+				<li> 2. 优化了一些样式🤗。</li>
+				<li> 3. 检测到了出现了一些<span style="color: brown;">网络请求问题</span>，正在找寻软件问题连夜修复中🧑🏻‍🔧。</li>
+				<li> 4. 之前刚开始接触后端写的代码真的好狗屎🤡正在重构中。</li>
+			</view>
+		</view>
+	</view>
+	<view class="card">
+		<view class="card-details ">
+			<view class="text-title">2024.9.7 {{result}}</view>
+			<view class="text-body " style="color: rgb(68, 68, 68); font-weight:normal;">
+				<view style="width: 100%;position: relative;">
+					<view style="height: auto; gap: 10px;display: flex;flex-direction: column;">
+						<text class="title">请选择你的出招</text>
+						<view style="display: flex; gap: 0.5rem;">
+							<button style="width:5.5rem;border: 1px solid rgb(189, 189, 189);background-color: {{rockKind!=1?'#e1f8dc':'#dcebf8'}};" bindtap="onRockClick" id="rock">✊</button>
+							<button style="width:5.5rem;background-color: {{rockKind!=2?'#e1f8dc':'#dcebf8'}}; border: 1px solid rgb(189, 189, 189);" bindtap="onPaperClick" id="paper">✋</button>
+							<button style="width:5.5rem;background-color: {{rockKind!=3?'#e1f8dc':'#dcebf8'}};border: 1px solid rgb(189, 189, 189);" bindtap="onScissorsClick" id="scissors">✌️</button>
+						</view>
+					</view>
+
+					<view style="height: auto; gap: 10px;display: flex;flex-direction: column; margin-top: 15px;">
+						<text style="">超级无敌小科猫😸！</text>
+						<view id="animation">{{computerChoice}}</view>
+					</view>
+				</view>
+			</view>
+		</view>
+	</view>
+
+	<view class="card">
+		<view class="card-details ">
+			<view class="text-title">2024.9.6 紧急修复</view>
+			<view class="text-body " style="color: rgb(68, 68, 68); font-weight:normal;">
+				<li> 1. 修复了一个bug，因为那个bug后端崩了几个小时🙇<span class="black" style="color: blueviolet;">私密马赛</span></li>
+				<li> 2. 优化了一些样式🤗。</li>
+				<li> 3. 最近在做视频，其实我根据用户调研发现其实做一个<span style="color: blueviolet;">产品说明书还是有用的</span>，所以这几天准备给山小科做个<span style="color: blueviolet;">产品评测样式</span>的视频。</li>
+				<li> 4. 感兴趣的朋友可以看看<span style="color: blueviolet;">关注我的b站账号</span><span style="color: chocolate;" class="black">Jrenc</span>，里面会有我的最新动态和过去制作的视频🤗</li>
+
+			</view>
+		</view>
+	</view>
+
+	<view class="card">
+		<view class="card-details ">
+			<view class="text-title">2024.9.3 优化产品</view>
+			<view class="text-body " style="color: rgb(68, 68, 68); font-weight:normal;">
+				<li> 1. 优化了<span class="black" style="color:seagreen;">大量图标</span>，MGC的图标库真的好可爱！</li>
+				<li> 2. 增加了<span class="black" style="color:seagreen;">反馈平台，大伙可以通过反馈平台去进行评论🤗</span>。</li>
+			</view>
+		</view>
+	</view>
 	<view class="card">
 		<view class="card-details ">
 			<view class="text-title">2024.8.26 暑假结束</view>
 			<view class="text-body " style="color: rgb(68, 68, 68); font-weight:normal;">
 				<li> 1. 暑假结束，继续上班。整个暑假做了很多事情，也发布了第二款作品uTools的插件EveryoneWrite。在我的视野里<span class="black" style="color:seagreen;">AI正在快速的改变这个世界</span>。</li>
-				<li> 2. 定了一个两年计划，从22到24应该都会一直去认真的做独立开发。所以如果<span class="black" style="color:seagreen;">您对山小科有什么建议或需求可以加群聊一下</span>。🤗</li>					
-				<li> 3. 临时修复了暑假查询课表失败的bug，<span class="black" style="color:seagreen;">正在重构代码后端🙇🏻</span>。</li>					
-
+				<li> 2. 定了一个两年计划，从22到24应该都会一直去认真的做独立开发。所以如果<span class="black" style="color:seagreen;">您对山小科有什么建议或需求可以加群聊一下</span>。🤗</li>
+				<li> 3. 临时修复了暑假查询课表失败的bug，<span class="black" style="color:seagreen;">代码后端也理清了🙇🏻</span>。</li>
+				<li> 4. 山小科会一直更新增加新功能的，大家<span class="black" style="color:rebeccapurple;">尽请期待</span>🚩</li>
+				<li> 5. 由于微信审核政策的原因，下架了很多之前<span class="black" style="color:rebeccapurple;">花的大饼🫓</span>等我慢慢去做出来再往上加。</li>
 			</view>
 		</view>
 	</view>
@@ -15,8 +84,8 @@
 			<view class="text-title">2024.6.17 记得测试</view>
 			<view class="text-body " style="color: rgb(68, 68, 68); font-weight:normal;">
 				<li> 1. 跑了<span class="black" style="color:seagreen;">压力测试</span>，重构了<span class="black" style="color:seagreen;">后端代码</span>，让它更快了。</li>
-				<li> 2. 修复了<span class="black" style="color:seagreen;">共享课表bug</span></li>					
-				<li> 3. 重构了<span class="black" style="color:seagreen;">共享课表代码</span></li>					
+				<li> 2. 修复了<span class="black" style="color:seagreen;">共享课表bug</span></li>
+				<li> 3. 重构了<span class="black" style="color:seagreen;">共享课表代码</span></li>
 			</view>
 		</view>
 	</view>
@@ -25,7 +94,7 @@
 			<view class="text-title">2024.6.15 只待东风</view>
 			<view class="text-body " style="color: rgb(68, 68, 68); font-weight:normal;">
 				<li> 1. 跑了<span class="black" style="color:seagreen;">三个食堂🍽</span>把所有档口的食物都统计下来了！</li>
-				<li> 2. 小科食物库<span class="black">启动🚀</span>！</li>			
+				<li> 2. 小科食物库<span class="black">启动🚀</span>！</li>
 			</view>
 		</view>
 	</view>
@@ -35,7 +104,7 @@
 			<view class="text-body " style="color: rgb(68, 68, 68); font-weight:normal;">
 				<li> 1. 完成了<span class="black">小科生活指南🏠</span>功能。</li>
 				<li> 2. 重新设计了头图，<span class="black">将首页头图</span>更换成了<span class="black">毕业季版本🧑🏻‍🎓</span>。</li>
-				<li> 3. 完成了<span class="black" style="color: darkgreen;">小科生活指南和小科资料库公众号投稿🌒</span>。</li>			
+				<li> 3. 完成了<span class="black" style="color: darkgreen;">小科生活指南和小科资料库公众号投稿🌒</span>。</li>
 			</view>
 		</view>
 	</view>
@@ -148,4 +217,78 @@
 	</view>
 
 
+</block>
+<block wx:if="{{died}}">
+	<view class="card">
+		<view class="card-details ">
+			<view class="text-title">小科猫已被打晕📦</view>
+			<view class="text-body " style="color: rgb(68, 68, 68); font-weight:normal;">
+				<li> 第一次见小科猫是在学校的后山上，那时小科猫正呲着牙和一条狗僵持，它的一只橘色，屁股有簇黑色的猫。</li>
+				<li> 我当时骑着电动车上山去做大物实验，山上的道很窄，他们两个看到我骑着电动车，猫没动狗就上来追我。😁校易行电动车上山动力不足，速度越来越慢。</li>
+				<li> 就在千钧一发之际，猫猫上来就给一套猫猫连拳。狗哥可能不想和他打架就落荒而逃了。那是我第一次见它。</li>
+				<li> 再相见就是夏天了，那年我大三，要考研了于是便留校了。不想学，无聊着玩游戏，而且一直在玩游戏。有天我在外面租房的舍友约我去吃饭。</li>
+				<li> 那时室温超导很火，他傻子买室温超导概念股被套牢了亏了几百块，而我赚了几百块。他想撺掇我请他吃饭，但结账的时候他却跑前面付的款。</li>
+				<li> 吃完饭还早，夜晚太孤独我们两个便在南门闲逛。我坐着他的电动车，南门那边好多厂，许多厂在夜晚都关了门。有一个厂竟然上面有着像灯条一样的东西。</li>
+				<li> 他觉得他很科幻然后开玩笑说，他是从十年后来的，问我有什么想问他的吗？</li>
+				<li> 我想了想冒出了一句“你有什么想嘱托我的吗？”</li>
+				<li> 好像问住他了，他犹豫了半天喃喃了一句，“好好活着，等我们十年后再一起喝酒聊天吃饭。”</li>
+				<li> 我们逛完一圈回来时，小科猫趴在烧烤店门口，我赶紧让他停车。</li>
+				<li> 告诉他我之前见过这个猫，并把她暴揍大狗的故事讲给他听。他不信，说猫怎么能打得过狗呢？</li>
+				<li> 我去买了火腿肠，然后喂给了小科猫。它的猫很软还舔我手。我买了一个超大的西瓜回宿舍，没吃完招了虫子。便扔掉了。</li>
+				<li> 第三次见它时已经是一年后了，那时我人生的下坡路，我刚检验出自己得了抑郁症，超级喜欢的女生好不容易成为了朋友但发现已经有喜欢的人了，父母也经常吵架。马上就要考研了但是我没怎么复习，我一直是朋友眼中被赋予众望的"佬"但是我却堕落了2023年的整个夏天。</li>
+				<li> 最重要的是抑郁症的药太难吃了，每次吃了都感觉好难受，浑身真的好累，吃不下饭。有时会情绪崩溃，大半夜在空无一人的马路上行走。</li>
+				<li> 见到猫时，是在深夜。看到它我突然醒了过来，想起了一年前意气风发的自己。张望附近发现自己已经快到了海边。夜里四下无人，只有曾经和我有过一面之缘的猫与我对视。</li>
+				<li> 今晚吃完饭后就感觉自己被一股莫大的孤独感包围住了，于是漫无目的的散步走了十几公里到了海边，摸了摸有些疼的脚，好像起泡了，看看表，发现自己已经走了三个小时。</li>
+				<li> 我看着眼前的猫🐱，摸了摸它的脑袋感觉到了自己内心毫无波澜的“美好”。但这总比一个人好吧，默默的想。</li>
+				<li> 你去过夜晚的海边吗？海风很大，岸边很黑，像是自己掉进了一片黑暗里，这种黑暗不同于闭上眼睛或躺在遮光能力强的窗帘中。</li>
+				<li> 这黑暗是一种死亡的归宿感，让人不禁思考宇宙，人类，生命和死亡这些摸不到边界和入口的问题。</li>
+				<li> 海水淹没脚踝时感觉很凉爽，我摇了摇脑袋，回头发现小猫跑掉了。</li>
+				<li> 再见小猫时，我坐在阳台上。突然想到在赛博朋克2077的结局有个魂归于久乡的结局，也可能不是或不叫这个名字。说实话，我记不清了。</li>
+				<li> 为什么坐在阳台上呢？好像是有一些伤心的事情，说实话不太想去想这些了。很累，就像是过去走了几万步躺在床上的那种"累"。</li>
+				<li> 最重要的这种累是无时无刻在我身上缠绕着的。前两天在某个深夜睡不着刷贴吧，刷到了一个令人看的很难受的帖子。</li>
+				<li> 是一个目前写着歪歪扭扭的字条，大概就是把这些药赠给有缘人，因为他孩子用不到了。那药我认得，是治抑郁症的。</li>
+				<li> 那时我想，如果我去世了我也要这么做，有这么多人看着我，为我感伤和默哀，我会感到自己其实没有白活一遭，是个善良且有价值的人。</li>
+				<li> 于是我刚才在我租的房子里把我的药打包成一个盒子📦，写上了我的美好愿景，我希望这个药可以去帮助到别人不要再像我那样累了。</li>
+				<li> 小科猫不知道怎么上的宿舍楼，在我旁边，用嘴咬了咬我的衣袖，示意我下去。朋友们发现了我打包好的药和嘱托，正在满世界的四处寻找我，但我可能并不知道。</li>
+				<li> 在赛博朋克里有杯酒叫做大卫·马丁内斯，他很坚强，可以保护住爱的人。可是其实这个世界又有什么需要我去保护呢。</li>
+				<li> 他们真的好笨，虽然我给了干扰信息但我也给了关键信息，但他们到现在都没找到我。</li>
+				<li> 小科猫安静的坐在了阳台上，月亮照在我们身上，我们一人一猫时不时望着月亮和它周围的云彩，又时不时望向地面。</li>
+				<li> 有什么想嘱托的吗？突然便想到了徐志摩，想到高中，想到过往认识的人和朋友，和自己有过交接的人和事，也想到了他的挥一挥衣袖不带走一片云彩。</li>
+				<li> 耳边也传来朋友在和别人打电话说“找到他了”，而我已挪开了最后一丝眷恋。等有机会，在理想国相见吧。愿你们在人间幸福精彩，过好自己的一生。</li>
+				<li> </li><li> </li><li> </li><li> </li><li> </li><li> </li><li> </li><li> </li><li> </li><li> </li><li> </li><li> </li><li> </li><li> </li><li> </li><li> </li>
+				<li> 轻轻的我走了，</li>
+				<li> 正如我轻轻的来；</li>
+				<li> 我轻轻的招手，</li>
+				<li> 作别西天的云彩。</li>
+				<li> 那河畔的金柳，</li>
+				<li> 是夕阳中的新娘；</li>
+				<li> 波光里的艳影，</li>
+				<li> 在我的心头荡漾。</li>
+				<li> 软泥上的青荇,</li>
+				<li> 油油的在水底招摇；</li>
+				<li> 在康河的柔波里，</li>
+				<li> 我甘心做一条水草！</li>
+				<li> 那榆荫下的一潭，</li>
+				<li> 不是清泉，是天上虹；</li>
+				<li> 揉碎在浮藻间，</li>
+				<li> 沉淀着彩虹似的梦。</li>
+				<li> 寻梦？撑一支长篙，</li>
+				<li> 向青草更青处漫溯；</li>
+				<li> 满载一船星辉，</li>
+				<li> 在星辉斑斓里放歌。</li>
+				<li> 但我不能放歌，</li>
+				<li> 悄悄是别离的笙箫；</li>
+				<li> 夏虫也为我沉默，</li>
+				<li> 沉默是今晚的康桥！</li>
+				<li> 悄悄的我走了，</li>
+				<li> 正如我悄悄的来；</li>
+				<li> 我挥一挥衣袖，</li>
+				<li> 不带走一片云彩。</li>
+
+				<li style="margin-top:20px;"> 此文写于2024年9月8日夜，想埋些小彩蛋但是没想到最后却像是本能般，将自己内心有些悲伤的故事埋下了。仅以此文悼念善良温暖的盒子📦如果有机会再见面，我一定会好好拥抱你。
+				</li>	
+			</view>
+		</view>
+	</view>
+</block>
 </view>

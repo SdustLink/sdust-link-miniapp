@@ -11,15 +11,20 @@ Page({
     academy:null,
     student_info:null,
     url:null,
-    point:'none'
+    point:'block'
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    
-    wx.setStorageSync("point", "none");
+     
+    var that = this;
+    that.setData({
+      point: wx.getStorageSync('blockshow')
+    })
+    console.log(that.data.point)
+
   },
 
   /**
@@ -76,6 +81,7 @@ Page({
 
   },
   turn(e) {
+    var that=this
     
     if(e.target.dataset.turn=="set"){
       wx.navigateTo({
@@ -90,8 +96,26 @@ Page({
 
     }
     else if(e.target.dataset.turn=="blog"){
+      
+      
+      that.setData({
+        point: 'none'
+      })
+      wx.setStorageSync('blockshow', this.data.point);
       wx.navigateTo({
         url: '../UserBlog/userblog',
+      })
+
+    }
+    else if(e.target.dataset.turn=="txc"){
+      wx.openEmbeddedMiniProgram({
+        appId: "wx8abaf00ee8c3202e",
+        extraData :{
+          // 把1368数字换成你的产品ID，否则会跳到别的产品
+          id : "665611",
+          // 自定义参数，具体参考文档
+     
+        }
       })
 
     }

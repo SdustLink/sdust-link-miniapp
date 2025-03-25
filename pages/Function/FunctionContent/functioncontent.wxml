@@ -1,3 +1,4 @@
+
 <view class="flex-col page">
   <view class="flex-col flex-auto group_3 space-y-30">
     <view class="flex-col items-end relative section_3">
@@ -13,32 +14,32 @@
       <view class="flex-col justify-start items-center image-wrapper_3 pos_3"  data-tar="1" bindtap="turnpage" >
         <image
           class="image_10"
-          src="../../../static/icon/Function/f7e57b6e58b8fbffcd7948a035925994.png"
+          src="../../../static/icon/Function/desk_line.png"
         />
       </view>
       <text class="font_3 pos_11">成绩查询</text>
       <view class="flex-col justify-start items-center image-wrapper_3 pos_9"  data-tar="3" bindtap="turnpage" >
         <image
           class="image_10"
-          src="../../../static/icon/Function/d3eb22c8ac7c321353f6d98a6291785a.png"
+          src="../../../static/icon/Function/emoji_2_line.png"
         />
       </view>
       <text class="font_3 pos_10">考试查询</text>
       <view class="flex-col justify-start items-center image-wrapper_3 pos_8"  data-tar="2" bindtap="turnpage">
         <image
           class="image_10"
-          src="../../../static/icon/Function/f5144c800ada5f46c78e36a09bbbd774.png"
+          src="../../../static/icon/Function/desk_lamp_2_line.png"
         />
       </view>
       <text class="font_3 pos_6">课表</text>
       <view class="flex-col justify-start items-center image-wrapper_2 pos_2"  data-tar="0" bindtap="turnpage">
         <image
           class="image_10"
-          src="../../../static/icon/Function/0441e61f0ed1e04a2fe00d897af86a9d.png"
+          src="../../../static/icon/Function/book_line.png"
         />
       </view>
       <text class="font_2 text " style="position: absolute;top: 25%;left: 52%;">从强智系统获取相关信息.</text>
-      <text class="font_1 " style="position: absolute;top: 15%;left: 52%;">强智接口</text>
+      <text class="font_1 " style="position: absolute;top: 15%;left: 52%;font-family: KingHwa_OldSong;">强智接口</text>
     </view>
     <view class="flex-col items-end relative section_4">
       <image
@@ -53,28 +54,28 @@
       <view class="flex-col justify-start items-center image-wrapper_3 pos_14"  data-tar="4" bindtap="turnpage">
         <image
           class="image_10"
-          src="../../../static/icon/Function/412cc93edd7af9e98086d87204f9eb1c.png"
+          src="../../../static/icon/Function/contacts_4_line.png"
         />
       </view>
       <text class="font_3 pos_22">备忘录</text>
       <view class="flex-col justify-start items-center image-wrapper_3 pos_20" data-tar="5" bindtap="turnpage">
         <image
           class="image_10"
-          src="../../../static/icon/Function/Beiwanglu.png"
+          src="../../../static/icon/Function/checks_line.png"
         />
       </view>
       <text class="font_3 pos_21">课程库</text>
       <view class="flex-col justify-start items-center image-wrapper_3 pos_19"  data-tar="6" bindtap="turnpage">
         <image
           class="image_10"
-          src="../../../static/icon/Function/7263cfdd2828be4f6595493d25f2009a.png"
+          src="../../../static/icon/Function/book_5_line (1).png"
         />
       </view>
       <text class="font_3 pos_17">部门课表</text>
       <view class="flex-col justify-start items-center image-wrapper_3 pos_13" data-tar="7" bindtap="turnpage">
         <image
           class="image_10"
-          src="../../../static/icon/Function/ee0b5ff70aa16a28e8fba1011b5f1dd2.png"
+          src="../../../static/icon/Function/sitemap_line.png"
         />
       </view>
       <text class="font_2 text_2 " style="position: absolute;top: 25%;left: 52%;">辅助学习的一些小工具!</text>
@@ -88,28 +89,28 @@
       <view class="flex-col justify-start items-center image-wrapper_3 pos_26"data-tar="8" bindtap="turnpage">
         <image
           class="image_10"
-          src="../../../static/icon/Function/d5f38d555848d95d6bd1acedd5eb2ccb.png"
+          src="../../../static/icon/Function/suitcase_line.png"
         />
       </view>
-      <text class="font_3 pos_35">小科活动</text>
-      <view class="flex-col justify-start items-center image-wrapper_3 pos_33"data-tar="9" bindtap="turnNull" style="background-color: rgb(211, 211, 211);">
+      <text class="font_3 pos_35">小科日志</text>
+      <view class="flex-col justify-start items-center image-wrapper_3 pos_33"data-tar="12" bindtap="turnpage" >
         <image
           class="image_10"
-          src="../../../static/icon/Function/CClass.png"
+          src="../../../static/icon/Function/black_board_2_line.png"
         />
       </view>
       <text class="font_3 pos_34">经验包</text>
       <view class="flex-col justify-start items-center image-wrapper_3 pos_32" data-tar="10" bindtap="turnpage" >
         <image
           class="image_10"
-          src="../../../static/icon/Function/92551edf3db16f5d06b8533a91afcfa1.png"
+          src="../../../static/icon/Function/magic_hat_line.png"
         />
       </view>
       <text class="font_3 pos_30">食物库</text>
       <view class="flex-col justify-start items-center image-wrapper_3 pos_25" data-tar="11"  bindtap="turnpage">
         <image
           class="image_10"
-          src="../../../static/icon/Function/57223febe7c6704649e204590b78386b.png"
+          src="../../../static/icon/Function/fork_knife_line.png"
         />
       </view>
       <image

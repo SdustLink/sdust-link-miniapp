@@ -18,15 +18,15 @@ Page({
             shadow:'0px 10px 20px rgba(102, 125, 159, 0.2);'
           }
       ,
-          {
-            src:'/image/jishiben.jpg',
-            name:'小科科创',
-            detail:'一起创造理想！',
-            id:1,
-            image:'https://www.sxksxk.work/static/function/phoneList/Green.png',
-            backgroundcolor: '#00C67E;',
-            shadow:'0px 10px 20px rgba(36, 209, 147, 0.2);'
-          },
+          // {
+          //   src:'/image/jishiben.jpg',
+          //   name:'小科科创',
+          //   detail:'一起创造理想！',
+          //   id:1,
+          //   image:'https://www.sxksxk.work/static/function/phoneList/Green.png',
+          //   backgroundcolor: '#00C67E;',
+          //   shadow:'0px 10px 20px rgba(36, 209, 147, 0.2);'
+          // },
           // {
           //   src:'/image/jishiben.jpg',
           //   name:'部门业务',

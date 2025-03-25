@@ -39,14 +39,37 @@
           </view>
           <view class="point" style="{{'background:'+('green')+';'+('display:'+(point)+';')}}"></view>
         </view>
-        <view>></view>
+        <view style="justify-content: center;display: flex;align-items: center;;">
+          <image
+          style="width: 1.5rem;"
+          mode="widthFix"
+          src="../../../static/icon/Function/ghost_line.png"
+        />
+        </view>
       </view>
-
+      <view class="unitInfo" bindtap="turn" data-turn="txc">
+        <view class="titleCon">
+          <view>反馈</view>
+        </view>
+        <view style="justify-content: center;display: flex;align-items: center;">
+          <image
+          style="width: 1.5rem;"
+          mode="widthFix"
+          src="../../../static/icon/Function/chat_4_line.png"
+        />
+        </view>
+      </view>
       <view class="unitInfo" bindtap="turn" data-turn="about">
         <view class="titleCon">
           <view>关于</view>
         </view>
-        <view>></view>
+        <view style="justify-content: center;display: flex;align-items: center;">
+          <image
+          style="width: 1.5rem;"
+          mode="widthFix"
+          src="../../../static/icon/Function/finger_tap_line.png"
+        />
+        </view>
       </view>
 
       <view class="unitInfo" style="border-bottom:0px;" bindtap="logout">

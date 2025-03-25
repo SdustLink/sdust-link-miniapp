@@ -196,6 +196,11 @@ Page({
         url: "/pages/Function/FoodLib/FoodLibContent/foodlibcontent"
       })
     }
+    else if(e.currentTarget.dataset.tar=="12"){
+      wx.navigateTo({
+        url: "/pages/User/UserBlog/userblog"
+      })
+    }
   },
 
  

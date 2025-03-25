@@ -138,28 +138,84 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    foodapi.getFoodItems().then((res)=>{
-
-console.log(res.foodList)
-       // 假设每个对象都有一个 'type' 属性，我们将基于这个属性来筛选
-      let uniqueTypes = new Set(res.foodList.map(item => item.kind));
-      // 将 Set 转换回数组
-   
-      let uniqueTypesArray = Array.from(uniqueTypes);
-       uniqueTypesArray = ['全部', ...uniqueTypesArray];
-
-      let arrayList2New=[
-        ["全部","A餐","B餐","C餐","北门","南门","外卖","其它"],
-        uniqueTypesArray
-      ]
-      console.log(arrayList2New);
-      this.setData({
-        foodList:res.foodList,//全部的数据
-        currentList:res.foodList,//筛选后的数据
-        arrayList2:arrayList2New
-      })
-    })
+    this.fetchFoodItems(); // 封装请求函数，便于重试
   },
+  
+  fetchFoodItems() {
+    const fetchData = () => {
+      wx.showLoading({
+        title: '加载中...',
+      });
+  
+      // 首先尝试从缓存中获取数据
+      const cachedData = wx.getStorageSync('foodListCache');
+      if (cachedData) {
+        // 如果有缓存数据，直接使用缓存数据
+        this.processData(cachedData);
+        wx.hideLoading();
+        // 在后台更新数据，即使失败也不会影响用户体验
+        this.updateDataInBackground();
+      } else {
+        // 如果没有缓存数据，则从服务器获取
+        this.fetchDataFromServer(true);
+      }
+    };
+    
+    fetchData();
+  },
+  
+  processData(data) {
+    let uniqueTypes = new Set(data.map(item => item.kind));
+    let uniqueTypesArray = Array.from(uniqueTypes);
+    uniqueTypesArray = ['全部', ...uniqueTypesArray];
+  
+    let arrayList2New = [
+      ["全部", "A餐", "B餐", "C餐", "北门", "南门", "外卖", "其它"],
+      uniqueTypesArray
+    ];
+  
+    this.setData({
+      foodList: data,
+      currentList: data,
+      arrayList2: arrayList2New
+    });
+  },
+  
+  updateDataInBackground() {
+    foodapi.getFoodItems().then((res) => {
+      // 更新缓存
+      wx.setStorageSync('foodListCache', res.foodList);
+      // 更新页面数据
+      this.processData(res.foodList);
+    }).catch(() => {
+      // 后台更新失败，不做任何处理
+    });
+  },
+  
+  fetchDataFromServer(showModal = false) {
+    foodapi.getFoodItems().then((res) => {
+      // 保存到缓存
+      wx.setStorageSync('foodListCache', res.foodList);
+      this.processData(res.foodList);
+      wx.hideLoading();
+    }).catch(() => {
+      wx.hideLoading();
+      if (showModal) {
+        wx.showModal({
+          title: '😿',
+          content: '获取食物库数据失败，可以点击确认重新获取数据😽',
+          showCancel: false,
+          success: (res) => {
+            if (res.confirm) {
+              this.fetchDataFromServer(true);
+            }
+          }
+        });
+      }
+    });
+  }
+,  
+  
 
   /**
    * 生命周期函数--监听页面初次渲染完成
@@ -172,10 +228,7 @@ console.log(res.foodList)
    * 生命周期函数--监听页面显示
    */
   onShow() {
-    wx.showToast({
-      title: '....正在统计咱山科的食物中QAQ',
-      icon:'none'
-    })
+  
   },
 
   /**

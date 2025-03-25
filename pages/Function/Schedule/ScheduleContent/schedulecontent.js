@@ -69,7 +69,7 @@ Page({
       });
     }).catch(err => {
       wx.showToast({
-        title: '请求失败1',
+        title: '共享状态失败',
         icon: 'error'
       });
     });
@@ -236,10 +236,10 @@ Page({
   touchMove(e) {
     const endX = e.touches[0].pageX;
     if (this.moveFlag) {
-      if (endX - this.startX > 50) {
+      if (endX - this.startX > 200) {
         this.weekchange(0, 1);
         this.moveFlag = false;
-      } else if (this.startX - endX > 50) {
+      } else if (this.startX - endX > 200) {
         this.weekchange(0, 2);
         this.moveFlag = false;
       }

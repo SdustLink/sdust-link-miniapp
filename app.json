@@ -6,20 +6,17 @@
       {
         "iconPath": "./static/icon/Tarbar/home_before.png",
         "selectedIconPath": "./static/icon/Tarbar/home_after.png",
-        "pagePath": "pages/Home/HomeContent/homecontent",
-        "text": "首页"
+        "pagePath": "pages/Home/HomeContent/homecontent"
       },
       {
-        "iconPath": "./static/icon/Tarbar/function_after.png",
-        "selectedIconPath": "./static/icon/Tarbar/funtion_before.png",
-        "pagePath": "pages/Function/FunctionContent/functioncontent",
-        "text": "功能"
+        "iconPath": "./static/icon/Tarbar/function_before.png",
+        "selectedIconPath": "./static/icon/Tarbar/function_after.png",
+        "pagePath": "pages/Function/FunctionContent/functioncontent"
       },
       {
         "iconPath": "./static/icon/Tarbar/user_before.png",
         "selectedIconPath": "./static/icon/Tarbar/user_after.png",
-        "pagePath": "pages/User/UserContent/usercontent",
-        "text": "用户"
+        "pagePath": "pages/User/UserContent/usercontent"
       }
     ]
   },

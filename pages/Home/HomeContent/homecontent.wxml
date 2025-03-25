@@ -4,7 +4,7 @@
   <!-- 课程名长度显示问题，第11周等长周数不适配问题，留出的字符空间至少+1 -->
   <view class="homegraph" bindtap="turn_content">
     <!-- <image style="width: 100%;height: 100%;  border: 1px solid #E6E8EE;  border-radius:17px;box-shadow: 0px 10px 20px rgba(76, 93, 105, 0.1);" src="https://www.sxksxk.work/static/function/headImage.png" mode="widthFix" /> -->
-    <image style="width: 100%;height: 100%;  border: 1px solid #d1d2d3;  border-radius:17px;box-shadow: 0px 10px 20px rgba(248, 248, 248, 0.1);" src="https://www.sxksxk.work/static/function/byj.png" mode="widthFix" />
+    <image style="width: 100%;height: 100%;  border: 1px solid #d1d2d3;  border-radius:17px;box-shadow: 0px 10px 20px rgba(248, 248, 248, 0.1);" src="https://www.sxksxk.work/static/function/byj3.png" mode="widthFix" />
     <image style="position: absolute;left:58vw;top:11vh;  height: 80px; " class="slow-rotate" mode="heightFix" src="https://www.sxksxk.work/static/function/sxk.png"/>
   </view>
 
@@ -66,7 +66,7 @@
       <view class="_text" style="height: 100%;">待办预提醒</view>
     </view>
     <view class="divider"></view>
-    <view class="flex-row items-center section_8 space-x-18" wx:if="{{not_selected_time_event_datalist.length+selected_time_event_datalist.length+overtime_event_datalist.length==0}}" bindtap="navigator_to_notpad">
+    <view class="flex-row items-center section_8 space-x-18"  wx:if="{{not_selected_time_event_datalist.length+selected_time_event_datalist.length+overtime_event_datalist.length==0}}" bindtap="navigator_to_notpad">
       <view class="text">点我一下可以新建待办哦~</view>
     </view>
     <!-- 当不为空 -->

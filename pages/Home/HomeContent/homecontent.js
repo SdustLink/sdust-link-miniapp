@@ -464,7 +464,7 @@ Page({
     }
   },
   turn_content(){
-    const url = encodeURIComponent('https://mp.weixin.qq.com/s?__biz=Mzk0OTYzMTgwNw==&mid=2247483802&idx=1&sn=bf9217596bdeece60c9d8b89b9b11a1a&chksm=c3542fcaf423a6dcb2de8a7a86197c0cc8cf46e330d5c3ca3d3c01a7dc561d7d8c3c14c7c601&token=1442570213&lang=zh_CN#rd');
+    const url = encodeURIComponent('https://mp.weixin.qq.com/s?__biz=Mzk0OTYzMTgwNw==&mid=2247483837&idx=1&sn=477e1267c247ec50190ee59693b86130&chksm=c3542fedf423a6fbbc860f23e2d49ea721c9adc7bd985ff4b7f4186a234f842ede6a4176b042&token=958824979&lang=zh_CN#rd');
     wx.navigateTo({
       url: `/pages/WechatPage/wechatpage?src=${url}`
     });

@@ -3,9 +3,9 @@
   <view style="position: absolute;" class="imgShow{{functionStatus?'-after':''}}">
     <image src="../../../../static/image/jiaran.png" style="height: 100%;" mode="heightFix" bind:tap="startRandomSelection"></image>
   </view>
-  <view class="textShow{{functionStatus?'-after':''}}" style="display: flex;flex-direction: column;gap: 2.5vh;">
+  <view class="textShow{{functionStatus?'-after':''}}" style="display: flex; flex-direction: column;gap: 3.5vh;">
     <text style="font-weight:bold; position: relative; ">今日科宝\n也要好好吃饭哦！</text>
-    <text style="color:rgb(117, 117, 117); font-size:14px; position: relative;   ">按钮可以切换不同模式哦！</text>
+    <text style="color:rgb(117, 117, 117); font-size:12px; position: relative;   ">点击右侧筛子可以切换不同模式</text>
   </view>
 </view>
 <myTab arrayData1="{{arrayList1}}" arrayData2="{{arrayList2}}" bind:onChange="classifyFood"></myTab>
