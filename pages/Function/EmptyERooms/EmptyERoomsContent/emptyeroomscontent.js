@@ -1,4 +1,4 @@
-const qzapi=require("../../../../API/qzapi")
+const qzapi=require("../../../../API/sdust_api")
 Page({
   data: {
     // 存放区间节次的筛选前的课表信息

@@ -1,6 +1,6 @@
 // pages/Function/GradeFind/GradeFindContent/gradefindcontent.js
 const app = getApp();
-const qzapi = require('../../../../API/qzapi');
+const qzapi = require('../../../../API/sdust_api');
 Page({
 
   /**

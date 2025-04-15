@@ -1,5 +1,5 @@
 const app = getApp()
-const qzapi = require('../../../API/qzapi');
+const qzapi = require('../../../API/sdust_api');
 const shareapi = require('../../../API/shareapi');
 const staticapi = require('../../../API/static');
 Page({

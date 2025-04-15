@@ -1,5 +1,5 @@
 const app = getApp();
-const api = require('../../../../API/qzapi');
+const api = require('../../../../API/sdust_api');
 const shareapi = require('../../../../API/shareapi');
 const utils = require('../../../../utils/util');
 const tableformat = require('../../../../utils/table');

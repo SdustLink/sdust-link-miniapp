@@ -1,6 +1,5 @@
-
 const app = getApp()
-const qzapi=require('./qzapi.js')
+const qzapi=require('./sdust_api')
 
 /* -------------共享课表----------------- */
 
@@ -406,7 +405,7 @@ function getsharecoursestate()  {
           // 如果res.data返回不是一个空数组执行下面
           if(res.data["weeks_not_exist"].length!=0){
             // 用for循环遍历数组
-            const qzapi=require('../API/qzapi')
+            const qzapi=require('../API/sdust_api')
             for(var i=0;i<res.data["weeks_not_exist"].length;i++){
               qzapi.getpostclass(res.data["weeks_not_exist"][i])
             }

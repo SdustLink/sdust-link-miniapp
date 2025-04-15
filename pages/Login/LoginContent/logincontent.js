@@ -22,7 +22,7 @@
   */
 
 // 导入新的强智API
-const qzapi = require('../../../API/qzapi_new');
+const qzapi = require('../../../API/sdust_api');
 
 Page({
 
