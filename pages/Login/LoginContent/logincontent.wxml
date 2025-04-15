@@ -11,14 +11,17 @@
     <view style="position: absolute;font-weight:bold;font-size:14px;display: block; box-sizing: border-box;  top: 36%;  background-color: white;border-radius: 3px; left: 10%;color: #484644;">
       强智系统账号
     </view>
-    <view style="position: absolute;font-weight:bold;font-size:14px;display: block; box-sizing: border-box;  top: 51%;  background-color: white;border-radius: 3px; left: 10%;color: #484644;">
+    <view style="position: absolute;font-weight:bold;font-size:14px;display: block; box-sizing: border-box;  top: 46%;  background-color: white;border-radius: 3px; left: 10%;color: #484644;">
       强智系统密码
+    </view>
+    <view style="position: absolute;font-weight:bold;font-size:14px;display: block; box-sizing: border-box;  top: 56%;  background-color: white;border-radius: 3px; left: 10%;color: #484644;">
+      验证码
     </view>
     <view style="position: absolute; height: 90rpx; display: block; box-sizing: border-box; background-color: #F3F2F1; top: 40%; width: 80%; border-radius: 3px; left: 10%;">
       <input placeholder="请输入学号" value="{{useraccount}}" bindinput="getaccount" style="color:#484644;position: absolute;height: 95%; display: block; box-sizing: border-box;width: 90%;border-radius: 15px;left: 5%;" />
       <view style="position: absolute;top: 95%;height: 5%;width:100%;background: #5B5FC7;"></view>
     </view>
-    <view style="position: absolute; height: 90rpx; display: block; box-sizing: border-box; background-color: #F3F2F1; top: 55%; width: 80%; border-radius: 3px; left: 10%">
+    <view style="position: absolute; height: 90rpx; display: block; box-sizing: border-box; background-color: #F3F2F1; top: 50%; width: 80%; border-radius: 3px; left: 10%">
       <view bindtap="changeshow" style="position: absolute;height: 95%;width: 15%;left: 85%;display: flex;justify-content: center;align-items: center;">
         <image src="{{_src}}" style="height: 50rpx;width: 50rpx;"></image>
       </view>
@@ -26,14 +29,21 @@
 
       <view style="position: absolute;top:95%;height: 5%;width:100%;background: #5B5FC7;"></view>
     </view>
-    <view style="position: absolute; height: 50rpx; display: block; box-sizing: border-box;color:#5B5FC7;font-weight:bold;font-size:15px; top: 65%; width: 80%; border-radius: 3px; left: 10%;justify-content: start;display: flex;align-items: center;">
+    <view style="position: absolute; height: 90rpx; display: block; box-sizing: border-box; background-color: #F3F2F1; top: 60%; width: 50%; border-radius: 3px; left: 10%">
+      <input bindinput="getVerifyCode" placeholder="请输入验证码" style="color:#484644;position: absolute;height: 95%; display: block; box-sizing: border-box;width: 90%;border-radius: 15px;left: 5%;" value="{{verifyCode}}" />
+      <view style="position: absolute;top:95%;height: 5%;width:100%;background: #5B5FC7;"></view>
+    </view>
+    <view style="position: absolute; height: 90rpx; display: block; box-sizing: border-box; top: 60%; width: 25%; border-radius: 3px; left: 65%">
+      <image src="{{verifyCodeUrl}}" bindtap="refreshVerifyCode" style="width: 100%; height: 100%;" />
+    </view>
+    <view style="position: absolute; height: 50rpx; display: block; box-sizing: border-box;color:#5B5FC7;font-weight:bold;font-size:15px; top: 70%; width: 80%; border-radius: 3px; left: 10%;justify-content: start;display: flex;align-items: center;">
       <text style="height: 50rpx;justify-content: start;display: flex;align-items: center;text-decoration:underline;" bindtap="checkAgreement">用户协议</text>
       <checkbox style="height: 50rpx;width: 50rpx;  margin-left: 7px;justify-content: start;display: flex;align-items: center;" checked="{{isAgreement}}" bindtap="changeAgreement" color="#5B5FC7"></checkbox>
     </view>
-    <view style="position: relative;top: 74%;height: 100rpx;">
+    <view style="position: relative;top: 78%;height: 100rpx;">
     <button bindtap="loginTo" style="background-color:#5B5FC7;color: white; font-family: -apple-system-font, 'Helvetica Neue', sans-serif;">登录</button>
     </view>
-    <view  style="color: rgba(0, 0, 0, 0.6); font-size: 0.9rem; position: relative;top: 77%;height: 80rpx;margin-left: 10%;margin-right: 10%;gap: 5px; display: flex;flex-direction: column;">
+    <view  style="color: rgba(0, 0, 0, 0.6); font-size: 0.9rem; position: relative;top: 80%;height: 80rpx;margin-left: 10%;margin-right: 10%;gap: 5px; display: flex;flex-direction: column;">
       <view>
         1. 本产品并不于服务端存储<span style="font-weight: bold;color: #5b5ec7f8;">强智密码，</span>但为实现<span style="font-weight: bold;">共享课表，部门课表</span>等功能，本应用会<span style="font-weight: bold;color: #5b5ec7f8;">存储用户课表信息</span>。
       </view>
@@ -53,7 +63,7 @@
     <text style="position: absolute; height: 100%; width: 100%;overflow-y: auto; ">
       尊敬的用户：
 
-      欢迎您使用归家望月（青岛）软件有限公司（以下简称“平台方”）提供的服务。在使用本产品之前，请务必仔细阅读并理解以下用户许可使用协议（以下简称“本协议”）中规定的所有权利和限制。
+      欢迎您使用归家望月（青岛）软件有限公司（以下简称"平台方"）提供的服务。在使用本产品之前，请务必仔细阅读并理解以下用户许可使用协议（以下简称"本协议"）中规定的所有权利和限制。
 
       定义
 

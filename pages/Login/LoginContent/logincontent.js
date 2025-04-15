@@ -21,6 +21,8 @@
 请求失败是前端请求失败！就算我返回404他也是属于请求成功的。
   */
 
+// 导入新的强智API
+const qzapi = require('../../../API/qzapi_new');
 
 Page({
 
@@ -30,17 +32,34 @@ Page({
   data: {
     useraccount: '', //用户账户
     userpws: '', //用户密码
+    verifyCode: '', // 验证码
+    verifyCodeUrl: '', // 验证码图片URL
     isshow: false, //是否显示密码
     _src: '/static/image/hidepws.png/', //隐藏的图片，初始均为不可见
     islogin: true, //是否登录
     isAgreement: false,
-    isShowAgreement: false
-
-
+    isShowAgreement: false,
+    isLoading: false // 是否正在加载中
   },
 
-
-  //将账号和密码进行传参到后端，返回值为ispermit,判断是否允许
+  // 刷新验证码
+  refreshVerifyCode() {
+    const that = this;
+    qzapi.getVerificationCode().then(result => {
+      that.setData({
+        verifyCodeUrl: result.url + '&rand=' + Math.random(), // 添加随机参数防止缓存
+        verifyCode: '' // 清空验证码输入
+      });
+      // 保存时间戳以便后续使用
+      wx.setStorageSync('verifyCodeTimestamp', result.timestamp);
+    }).catch(error => {
+      console.error('获取验证码失败:', error);
+      wx.showToast({
+        title: '获取验证码失败',
+        icon: 'error'
+      });
+    });
+  },
 
   checkAgreement() {
     var that = this;
@@ -49,6 +68,7 @@ Page({
       isShowAgreement: !isShowAgreement_
     })
   },
+
   changeAgreement() {
     var that = this;
     var isAgreement_ = that.data.isAgreement;
@@ -61,7 +81,7 @@ Page({
 
 
   //进行登录的设置
-  loginTo() {
+  async loginTo() {
     const app = getApp();
     app.globalData.todatabasesflag = 0;
     app.globalData.requestflag = 0;
@@ -69,8 +89,20 @@ Page({
     let {
       useraccount,
       userpws,
-      isAgreement
+      verifyCode,
+      isAgreement,
+      isLoading
     } = that.data;
+
+    // 如果正在加载中，不执行任何操作
+    if (isLoading) {
+      return;
+    }
+
+    // 设置为加载中状态
+    that.setData({
+      isLoading: true
+    });
 
     // 前端验证
     if (!isAgreement) {
@@ -78,6 +110,7 @@ Page({
         title: '请同意用户协议',
         icon: 'error'
       });
+      that.setData({ isLoading: false });
       return;
     }
 
@@ -86,6 +119,7 @@ Page({
         title: '学号不能为空',
         icon: 'error'
       });
+      that.setData({ isLoading: false });
       return;
     }
 
@@ -95,6 +129,7 @@ Page({
         title: '学号格式错误',
         icon: 'error'
       });
+      that.setData({ isLoading: false });
       return;
     }
 
@@ -103,64 +138,79 @@ Page({
         title: '密码不能为空',
         icon: 'error'
       });
+      that.setData({ isLoading: false });
       return;
     }
 
-    // 后端鉴权
-    wx.request({
-      url: 'https://jwgl.sdust.edu.cn/app.do',
-      method: 'GET',
-      data: {
-        "method": "authUser",
-        "xh": useraccount,
-        "pwd": userpws
-      },
-      header: {
-        "Referer": "http://www.baidu.com",
-        "Accept-encoding": "gzip, deflate, br",
-        "Accept-language": "zh-CN,zh-TW;q=0.8,zh;q=0.6,en;q=0.4,ja;q=0.2",
-        "Cache-control": "max-age=0"
-      },
-      success: (res) => {
-        if (res.data["flag"] == "0") {
-          wx.setStorageSync('islogin', false);
-          wx.showToast({
-            title: '密码错误',
-            icon: "error"
-          });
-        } else if (res.data["flag"] == "1") {
-          wx.setStorageSync('token', res.data["token"]);
-          wx.setStorageSync('islogin', true);
-          wx.showToast({
-            title: '登录成功',
-            icon: "success"
-          });
-          that.setData({
-            islogin: true
-          });
-          wx.setStorageSync('useraccount', that.data.useraccount);
-          wx.setStorageSync('userpws', that.data.userpws);
+    if (!verifyCode) {
+      wx.showToast({
+        title: '验证码不能为空',
+        icon: 'error'
+      });
+      that.setData({ isLoading: false });
+      return;
+    }
 
-          const api = require('../../../API/qzapi');
-          api.only_data(wx.getStorageSync('useraccount'));
+    try {
+      wx.showLoading({
+        title: '登录中...',
+        mask: true
+      });
+
+      // 保存验证码到缓存
+      wx.setStorageSync('verifyCode', verifyCode);
+      
+      // 使用新API登录
+      const loginResult = await qzapi.login(useraccount, userpws, verifyCode);
+      
+      if (loginResult.success) {
+        wx.setStorageSync('islogin', true);
+        wx.showToast({
+          title: '登录成功',
+          icon: "success"
+        });
+        that.setData({
+          islogin: true
+        });
+        wx.setStorageSync('useraccount', that.data.useraccount);
+        wx.setStorageSync('userpws', that.data.userpws);
+
+        // 初始化数据
+        try {
+          await qzapi.only_data();
           wx.reLaunch({
             url: '../../Home/HomeContent/homecontent',
           });
-        } else {
-          wx.setStorageSync('islogin', false);
+        } catch (error) {
+          console.error("数据初始化失败:", error);
           wx.showToast({
-            title: '未知错误',
-            icon: "error"
+            title: '数据加载失败',
+            icon: 'error'
           });
         }
-      },
-      fail: (res) => {
+      } else {
+        wx.setStorageSync('islogin', false);
         wx.showToast({
-          title: '网络请求失败',
-          icon: 'error'
+          title: loginResult.message || '登录失败',
+          icon: "error"
         });
+        // 刷新验证码
+        that.refreshVerifyCode();
       }
-    });
+    } catch (error) {
+      console.error("登录过程中出错:", error);
+      wx.showToast({
+        title: '网络请求失败',
+        icon: 'error'
+      });
+      // 刷新验证码
+      that.refreshVerifyCode();
+    } finally {
+      wx.hideLoading();
+      that.setData({
+        isLoading: false
+      });
+    }
   },
 
   // 改变密码状态
@@ -180,7 +230,6 @@ Page({
   },
   //获取账号名
   getaccount(e) {
-
     var that = this
     that.setData({
       useraccount: e.detail.value
@@ -193,12 +242,13 @@ Page({
       userpws: e.detail.value
     })
   },
-  // //忘记密码跳转
-  // forget(){
-  //   wx.navigateTo({
-  //     url: '/pages/login/tiaozhuan',
-  //   })
-  // },
+  // 获取验证码
+  getVerifyCode(e) {
+    var that = this
+    that.setData({
+      verifyCode: e.detail.value
+    })
+  },
 
   /**
    * 生命周期函数--监听页面加载
@@ -224,7 +274,8 @@ Page({
       console.log('Failed to retrieve data from storage: ', e);
     }
 
-
+    // 加载验证码
+    that.refreshVerifyCode();
   },
 
   /**
@@ -238,8 +289,8 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-
-
+    // 每次页面显示时刷新验证码
+    this.refreshVerifyCode();
   },
 
   /**
