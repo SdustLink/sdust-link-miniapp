@@ -36,22 +36,8 @@ function checkDomain(url) {
 
 export const request = (requestInfo) => {
   return new Promise((resolve, reject) => {
-    // 合并默认选项
-    const defaultOptions = {
-      title: "",
-      load: 1,
-      url: "",
-      method: "GET",
-      data: {},
-      cookie: true,
-      debounce: false,
-      throttle: false,
-      headers: {
-        "content-type": "application/x-www-form-urlencoded",
-      },
-    };
 
-    const options = { ...defaultOptions, ...requestInfo };
+    const options = {  ...requestInfo };
     
     // 处理Cookie
     if (options.cookie && sessionCookie) {

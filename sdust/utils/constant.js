@@ -1,4 +1,4 @@
-export const SW_HOST = "https://jwgl.sdust.edu.cn/jsxsd/";
+export const SW_HOST = "https://jwgl.sdust.edu.cn/";
  
 export const CACHE = {
   USER: "user",

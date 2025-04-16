@@ -5,9 +5,8 @@ import { HTTP } from "../utils/request";
 export const loginApp = (account, password, code) => {
   console.log("开始登录请求:", account, code);
   return HTTP.request({
-    url: SW_HOST + "xk/LoginToXk",
+    url: SW_HOST + "Logon.do?method=logon",
     method: "POST",
-    throttle: true,
     data: {
       encoded: base64Encode(account) + "%%%" + base64Encode(password),
       RANDOMCODE: code,

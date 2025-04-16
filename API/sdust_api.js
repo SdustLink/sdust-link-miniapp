@@ -1,4 +1,4 @@
-import { login as sdustLogin, requestForVerifyCode } from '../sdust/api/login';
+import { loginApp as sdustLogin, requestForVerifyCode } from '../sdust/api/login';
 import { requestRemoteTimeTable } from '../sdust/api/timetable';
 import { requestForGrade } from '../sdust/api/grade';
 import { requestForExam } from '../sdust/api/exam';
@@ -11,35 +11,10 @@ const app = getApp();
 // 获取验证码
 async function getVerificationCode() {
   try {
-    console.log("开始获取验证码...", SW_HOST + "verifycode.servlet");
+    console.log("开始获取验证码...");
     
-    // 使用直接的wx.request
-    const verifyCodeData = await new Promise((resolve, reject) => {
-      wx.request({
-        url: SW_HOST + "verifycode.servlet",
-        method: "GET",
-        responseType: "arraybuffer",
-        enableHttp2: true,
-        success: (res) => {
-          if (res.statusCode === 200) {
-            resolve(res.data);
-          } else {
-            reject(new Error(`服务器返回错误状态码: ${res.statusCode}`));
-          }
-        },
-        fail: (err) => {
-          console.error("验证码请求失败:", err);
-          
-          // 针对ERR_CONNECTION_CLOSED错误给出更明确的提示
-          if (err.errMsg && err.errMsg.includes("CONNECTION_CLOSED")) {
-            const errMsg = "连接被关闭，请确认jwgl.sdust.edu.cn已添加到小程序管理后台的request合法域名中";
-            reject(new Error(errMsg));
-          } else {
-            reject(err);
-          }
-        }
-      });
-    });
+    // 使用sdust/api中的requestForVerifyCode函数
+    const verifyCodeData = await requestForVerifyCode();
     
     const timestamp = new Date().getTime();
     return {
@@ -56,40 +31,15 @@ async function getVerificationCode() {
 // 登录系统
 async function login(username, password, verifyCode) {
   try {
-    console.log("sdust_api.js: 开始调用登录函数", { username,password, verifyCode });
+    console.log("sdust_api.js: 开始调用登录函数", { username, password, verifyCode });
     
-    // 使用wx.request替代HTTP.request
-    const loginResult = await new Promise((resolve, reject) => {
-      wx.request({
-        url: SW_HOST + "xk/LoginToXk",
-        method: "POST",
-        data: {
-          encoded: base64Encode(username) + "%%%" + base64Encode(password),
-          RANDOMCODE: verifyCode,
-        },
-        success: (res) => {
-          resolve(res);
-        },
-        fail: (err) => {
-          reject(err);
-        }
-      });
-    });
+    // 使用sdust/api中的loginApp函数
+    const loginResult = await sdustLogin(username, password, verifyCode);
     
     console.log("sdust_api.js: 登录请求响应", loginResult);
     
-    if (
-      loginResult.statusCode === 302 ||
-      loginResult.data.indexOf("calender_user_schedule") > -1 ||
-      loginResult.data.indexOf("TopUserSetting") > -1
-    ) {
+    if (loginResult.status === 1) {
       console.log("sdust_api.js: 登录成功");
-      // 保存cookies
-      if (loginResult.header && (loginResult.header['Set-Cookie'] || loginResult.header['set-cookie'])) {
-        const cookies = loginResult.header['Set-Cookie'] || loginResult.header['set-cookie'];
-        wx.setStorageSync('cookies', cookies);
-      }
-      
       return { 
         success: true, 
         message: "登录成功",
@@ -97,20 +47,9 @@ async function login(username, password, verifyCode) {
       };
     } else {
       console.log("sdust_api.js: 登录失败");
-      // 尝试解析错误消息
-      let errorMsg = "登录失败，请检查账号、密码或验证码";
-      try {
-        const errMatch = /<font[\s\S]*?>(.*?)<\/font>/.exec(loginResult.data);
-        if (errMatch && errMatch[1]) {
-          errorMsg = errMatch[1].indexOf("!!") > -1 ? "验证码错误" : "账号或密码错误";
-        }
-      } catch (e) {
-        console.error("解析错误消息失败", e);
-      }
-      
       return { 
         success: false, 
-        message: errorMsg
+        message: loginResult.msg || "登录失败，请检查账号、密码或验证码"
       };
     }
   } catch (error) {
@@ -155,21 +94,13 @@ async function getExamInfo(term = "") {
 // 获取学生信息 (需要从HTML解析)
 async function getStudentInfo() {
   try {
-    const response = await new Promise((resolve, reject) => {
-      wx.request({
-        url: SW_HOST + "framework/xsMain.jsp",
-        method: "GET",
-        success: (res) => {
-          resolve(res);
-        },
-        fail: (err) => {
-          reject(err);
-        }
-      });
+    // 使用HTTP对象进行请求
+    const response = await HTTP.request({
+      url: SW_HOST + "framework/xsMain.jsp",
+      method: "GET",
     });
     
     // 这里需要实现从HTML解析学生信息的逻辑
-    // 由于sdust api中没有现成的方法，需要自行实现
     const studentInfo = parseStudentInfo(response.data);
     return studentInfo;
   } catch (error) {
@@ -225,7 +156,6 @@ async function only_data() {
     app.globalData.student_info = studentInfoData;
     
     // 获取当前学期和周次
-    // 这里可能需要从页面中解析或者使用其他方式获取
     const currentTime = {
       xnxqh: wx.getStorageSync('currentXnxqh') || "",
       zc: wx.getStorageSync('currentZc') || 1
@@ -240,24 +170,20 @@ async function only_data() {
     // 同步数据到服务器
     if (app.globalData.TotalUrl) {
       try {
-        const loginResponse = await new Promise((resolve, reject) => {
-          wx.request({
-            url: `${app.globalData.TotalUrl}/qz/login-info/`,
-            method: 'POST',
-            data: {
-              code: "wxdb4a3a20947d7c4a",
-              snumber: studentInfoData.xh,
-              name: studentInfoData.xm,
-              classname: studentInfoData.bj,
-              majorname: studentInfoData.zymc,
-              collegename: studentInfoData.yxmc,
-              enteryear: studentInfoData.rxnf,
-              gradenumber: studentInfoData.usertype,
-            },
-            success: (res) => resolve(res.data),
-            fail: reject
-          });
-        });
+        const loginResponse = await HTTP.request({
+          url: `${app.globalData.TotalUrl}/qz/login-info/`,
+          method: 'POST',
+          data: {
+            code: "wxdb4a3a20947d7c4a",
+            snumber: studentInfoData.xh,
+            name: studentInfoData.xm,
+            classname: studentInfoData.bj,
+            majorname: studentInfoData.zymc,
+            collegename: studentInfoData.yxmc,
+            enteryear: studentInfoData.rxnf,
+            gradenumber: studentInfoData.usertype,
+          }
+        }).then(res => res.data);
 
         if (loginResponse.status === "success") {
           app.globalData.todatabasesflag++;
@@ -272,115 +198,11 @@ async function only_data() {
   }
 }
 
-// 通用网络请求方法
-async function request(options) {
-  return new Promise((resolve, reject) => {
-    // 默认添加cookie
-    const header = options.header || {};
-    const cookies = wx.getStorageSync('cookies');
-    if (cookies) {
-      header.Cookie = cookies;
-    }
-
-    wx.request({
-      url: options.url,
-      method: options.method || 'GET',
-      data: options.data || {},
-      header: header,
-      success: (res) => {
-        // 处理可能存在的新cookie
-        if (res.header && (res.header['Set-Cookie'] || res.header['set-cookie'])) {
-          const newCookies = res.header['Set-Cookie'] || res.header['set-cookie'];
-          wx.setStorageSync('cookies', newCookies);
-        }
-        resolve(res);
-      },
-      fail: (err) => {
-        console.error("网络请求失败:", err);
-        reject(err);
-      }
-    });
-  });
-}
-
-// 直接使用wx.request示例函数
-async function directRequestExample(url, method = 'GET', data = {}, header = {}) {
-  // 获取存储的cookie
-  const cookies = wx.getStorageSync('cookies');
-  if (cookies) {
-    header.Cookie = cookies;
-  }
-  
-  return new Promise((resolve, reject) => {
-    wx.request({
-      url: url.startsWith('http') ? url : SW_HOST + url,
-      method: method,
-      data: data,
-      header: {
-        'content-type': 'application/x-www-form-urlencoded',
-        ...header
-      },
-      success: (res) => {
-        // 处理cookie
-        if (res.header && (res.header['Set-Cookie'] || res.header['set-cookie'])) {
-          const newCookies = res.header['Set-Cookie'] || res.header['set-cookie'];
-          wx.setStorageSync('cookies', newCookies);
-        }
-        
-        resolve(res);
-      },
-      fail: (err) => {
-        console.error('请求失败:', err);
-        reject(err);
-      }
-    });
-  });
-}
-
 // 直接使用wx.request获取课表
 async function getTimeTableDirect(term, week) {
   try {
-    const result = await directRequestExample(
-      "xskb/xskb_list.do", 
-      "GET", 
-      { week, term }
-    );
-    
-    // 使用parser.js中的解析函数处理返回的HTML
-    const { RegExec } = require('../sdust/utils/parser');
-    
-    // 解析课表逻辑（复用timetable.js中的解析函数）
-    const timeTable = [];
-    const classes = RegExec.match(/<div[\s\S]*?class="kbcontent"[\s]?>(.*?)<\/div>/g, result.data);
-
-    classes.forEach((item, index) => {
-      const repeat = item.split(/-{10,}/g);
-      const day = index % 7;
-      const serial = Math.floor(index / 7);
-
-      for (const value of repeat) {
-        if (value.startsWith("&nbsp;")) continue;
-        const nameGroup = value.split(/(<\/br>)|(<br\/>)/g);
-        const name = RegExec.get(nameGroup, 0).replace("<br>", "").replace(/[（]/g, "(").replace("）", ")");
-        const teacher = RegExec.exec(/<font[\s\S]*?title='老师'[\s\S]*?>(.*?)<\/font>/g, value);
-        const weekStr = RegExec.exec(/<font[\s\S]*?title='周次\(节次\)'[\s\S]*?>(.*?)<\/font>/g, value)
-          .replace(/[,=\\]/g, ",")
-          .replace(/[（]/g, "(")
-          .replace("）", ")");
-        const classroom = RegExec.exec(/<font[\s\S]*?title='教室'[\s\S]*?>(.*?)<\/font>/g, value);
-
-        timeTable.push({
-          weekDay: day,
-          serial,
-          className: name,
-          classRoom: classroom,
-          teacher,
-          ext: weekStr.replace(/[()]/g, ""),
-        });
-      }
-    });
-
-    return timeTable;
+    // 使用sdust/api中的requestRemoteTimeTable函数
+    return await requestRemoteTimeTable(term, week);
   } catch (error) {
     console.error("获取课表失败:", error);
     throw new Error("获取课表失败");
@@ -397,7 +219,6 @@ module.exports = {
   parseStudentInfo,
   init_data,
   only_data,
-  request,
-  directRequestExample,
+  request: HTTP.request,  // 导出HTTP.request作为request
   getTimeTableDirect
 };
