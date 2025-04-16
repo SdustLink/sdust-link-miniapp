@@ -306,8 +306,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
-    // 每次页面显示时刷新验证码
-    this.refreshVerifyCode();
+
   },
 
   /**

@@ -5,6 +5,8 @@ import { SW_HOST } from "./constant";
 
 // 会话Cookie存储
 let sessionCookie = "";
+// 是否已初始化JSESSIONID
+let jsessionInitialized = false;
 
 // 检查域名是否添加到了微信小程序的安全域名列表
 function checkDomain(url) {
@@ -34,27 +36,71 @@ function checkDomain(url) {
   }
 }
 
-export const request = (requestInfo) => {
-  return new Promise((resolve, reject) => {
+// 从cookie字符串中提取JSESSIONID
+function extractJSESSIONID(cookieStr) {
+  if (!cookieStr) return null;
+  const match = cookieStr.match(/JSESSIONID=([^;]+)/);
+  return match ? match[1] : null;
+}
 
-    const options = {  ...requestInfo };
+// 初始化JSESSIONID - 发送GET请求到主页获取
+async function initJSESSIONID() {
+  console.log("初始化JSESSIONID...");
+  try {
+    const res = await wx.request({
+      url: SW_HOST,
+      method: "GET"
+    });
+    
+    // 从响应头中提取JSESSIONID
+    if (res.header && (res.header['Cookie'] || res.header['cookie'])) {
+      const setCookie = res.header['Cookie'] || res.header['cookie'];
+      const jsessionid = extractJSESSIONID(setCookie);
+      
+      if (jsessionid) {
+        console.log("成功获取JSESSIONID:", jsessionid);
+        sessionCookie = `JSESSIONID=${jsessionid}`;
+        wx.setStorageSync('cookies', sessionCookie);
+        jsessionInitialized = true;
+        return true;
+      }
+    }
+    
+    console.log("未能从响应头中获取JSESSIONID");
+    return false;
+  } catch (error) {
+    console.error("初始化JSESSIONID失败:", error);
+    return false;
+  }
+}
+
+// 包装请求函数，确保JSESSIONID已初始化
+export const request = async (requestInfo) => {
+  // 如果还未初始化JSESSIONID且不是主动请求获取JSESSIONID的请求
+  if (!jsessionInitialized && !requestInfo.skipJsessionCheck) {
+    console.log("JSESSIONID未初始化，正在获取...");
+    await initJSESSIONID();
+  }
+  
+  return new Promise((resolve, reject) => {
+    const options = { headers: {}, ...requestInfo }; // 确保headers存在
     
     // 处理Cookie
-    if (options.cookie && sessionCookie) {
-      options.headers.cookie = sessionCookie;
-    }
-
-    // 从Storage中恢复Cookie（以防内存中的sessionCookie丢失）
-    if (options.cookie && !options.headers.cookie) {
+    let cookieToSend = sessionCookie;
+    if (!cookieToSend) {
       const storedCookies = wx.getStorageSync('cookies');
       if (storedCookies) {
-        options.headers.cookie = storedCookies;
+        cookieToSend = storedCookies;
       }
+    }
+    if (cookieToSend) {
+      options.headers.cookie = cookieToSend; // 直接设置
     }
 
     // 检查域名配置
     const domainInfo = checkDomain(options.url);
     console.log(`发起请求: ${options.url} (${domainInfo.domain})`);
+    console.log(`使用的Cookie: ${options.headers.cookie || "无"}`);
 
     // 执行wx.request请求
     wx.request({
@@ -67,10 +113,17 @@ export const request = (requestInfo) => {
         console.log("请求成功，状态码:", res.statusCode);
         
         // 自动保存Cookie
-        if (res.header && (res.header['Set-Cookie'] || res.header['set-cookie'])) {
-          sessionCookie = res.header['Set-Cookie'] || res.header['set-cookie'];
-          // 也可以保存到Storage
-          wx.setStorageSync('cookies', sessionCookie);
+        if (res.header && (res.header['Cookie'] || res.header['cookie'])) {
+          const newCookie = res.header['Cookie'] || res.header['cookie'];
+          
+          // 如果是JSESSIONID，则更新
+          const jsessionid = extractJSESSIONID(newCookie);
+          if (jsessionid) {
+            sessionCookie = `JSESSIONID=${jsessionid}`;
+            jsessionInitialized = true;
+            wx.setStorageSync('cookies', sessionCookie);
+            console.log("更新JSESSIONID:", jsessionid);
+          }
         }
 
         if (res.statusCode < 400) {
@@ -111,5 +164,16 @@ export const request = (requestInfo) => {
   });
 };
 
+// 提供一个直接获取JSESSIONID的函数供外部调用
+export const getJSESSIONID = async () => {
+  if (!jsessionInitialized) {
+    await initJSESSIONID();
+  }
+  return extractJSESSIONID(sessionCookie);
+};
+
 // 导出HTTP对象
-export const HTTP = { request }; 
+export const HTTP = { 
+  request,
+  getJSESSIONID 
+}; 

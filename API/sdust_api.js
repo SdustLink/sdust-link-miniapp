@@ -13,12 +13,15 @@ async function getVerificationCode() {
   try {
     console.log("开始获取验证码...");
     
-    // 使用sdust/api中的requestForVerifyCode函数
-    const verifyCodeData = await requestForVerifyCode();
-    
+    // 生成时间戳用于URL和显示
     const timestamp = new Date().getTime();
+    
+    // 使用sdust/api中的requestForVerifyCode函数，只请求一次
+    const verifyCodeData = await requestForVerifyCode();
+    console.log("获取验证码成功:", verifyCodeData);
     return {
-      url: `${SW_HOST}verifycode.servlet?t=${timestamp}`,
+      // URL与requestForVerifyCode中保持一致
+      url: `${SW_HOST}verifycode.servlet?t=${timestamp}&rand=${Math.random()}`,
       timestamp: timestamp,
       data: verifyCodeData
     };
@@ -118,13 +121,12 @@ function parseStudentInfo(html) {
 }
 
 // 初始化数据
-async function init_data(account, pwd) {
+async function init_data(account, pwd, verifyCode) {
   if (wx.getStorageSync('islogin') === true) {
     try {
-      const verifyCodeInfo = await getVerificationCode();
-      // 这里需要先展示验证码给用户看，让用户输入验证码
-      // 简化处理，这里假设已经获取了用户输入的验证码
-      const verifyCode = wx.getStorageSync('verifyCode') || "";
+   
+      // 注意：这里应该等待用户在UI上查看验证码并输入
+      // 在调用此函数时传入用户输入的verifyCode，而不是从Storage获取
       
       const loginResult = await login(account, pwd, verifyCode);
       

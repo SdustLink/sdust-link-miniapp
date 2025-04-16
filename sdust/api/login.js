@@ -40,8 +40,17 @@ export const loginApp = (account, password, code) => {
 };
 
 export const requestForVerifyCode = () => {
+  const timestamp = new Date().getTime();
+  const rand = Math.random();
+  console.log("获取验证码，时间戳:", timestamp);
+  
+  // 注意：这里只请求一次带参数的验证码URL
   return HTTP.request({
-    url: SW_HOST + "verifycode.servlet",
+    url: `${SW_HOST}verifycode.servlet?t=${timestamp}&rand=${rand}`,
     responseType: "arraybuffer",
-  }).then(res => res.data);
+    
+  }).then(res => {
+    console.log("验证码请求完成，Cookie:", wx.getStorageSync('cookies'));
+    return res.data;
+  });
 };
