@@ -35,7 +35,7 @@ Page({
     verifyCode: '', // 验证码
     verifyCodeUrl: '', // 验证码图片URL
     isshow: false, //是否显示密码
-    _src: '/static/image/hidepws.png/', //隐藏的图片，初始均为不可见
+    _src: '/static/image/hidepws.png', //隐藏的图片，初始均为不可见
     islogin: true, //是否登录
     isAgreement: false,
     isShowAgreement: false,
@@ -86,6 +86,8 @@ Page({
     app.globalData.todatabasesflag = 0;
     app.globalData.requestflag = 0;
     var that = this;
+    console.log("登录按钮点击");
+    
     let {
       useraccount,
       userpws,
@@ -93,9 +95,17 @@ Page({
       isAgreement,
       isLoading
     } = that.data;
+    
+    console.log("当前输入状态:", {
+      账号: useraccount,
+      验证码: verifyCode,
+      协议: isAgreement,
+      加载中: isLoading
+    });
 
     // 如果正在加载中，不执行任何操作
     if (isLoading) {
+      console.log("正在加载中，不执行操作");
       return;
     }
 
@@ -152,6 +162,7 @@ Page({
     }
 
     try {
+      console.log("开始执行登录流程");
       wx.showLoading({
         title: '登录中...',
         mask: true
@@ -161,9 +172,12 @@ Page({
       wx.setStorageSync('verifyCode', verifyCode);
       
       // 使用新API登录
+      console.log("调用登录API");
       const loginResult = await qzapi.login(useraccount, userpws, verifyCode);
+      console.log("登录API返回结果:", loginResult);
       
       if (loginResult.success) {
+        console.log("登录成功");
         wx.setStorageSync('islogin', true);
         wx.showToast({
           title: '登录成功',
@@ -177,7 +191,9 @@ Page({
 
         // 初始化数据
         try {
+          console.log("初始化用户数据");
           await qzapi.only_data();
+          console.log("跳转到首页");
           wx.reLaunch({
             url: '../../Home/HomeContent/homecontent',
           });
@@ -189,6 +205,7 @@ Page({
           });
         }
       } else {
+        console.log("登录失败:", loginResult.message);
         wx.setStorageSync('islogin', false);
         wx.showToast({
           title: loginResult.message || '登录失败',

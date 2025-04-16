@@ -3,6 +3,7 @@ import { RegExec, base64Encode } from "../utils/parser";
 import { HTTP } from "../utils/request";
 
 export const loginApp = (account, password, code) => {
+  console.log("开始登录请求:", account, code);
   return HTTP.request({
     url: SW_HOST + "xk/LoginToXk",
     method: "POST",
@@ -13,19 +14,25 @@ export const loginApp = (account, password, code) => {
     },
   })
     .then(res => {
+      console.log("登录请求成功，状态码:", res.statusCode);
       if (
         res.statusCode === 302 ||
         res.data.indexOf("calender_user_schedule") > -1 ||
         res.data.indexOf("TopUserSetting") > -1
       ) {
+        console.log("登录成功条件满足");
         return { status: 1, msg: "" };
       } else {
+        console.log("登录失败，解析错误消息");
+        console.log("返回数据:", res.data);
         const err = RegExec.exec(/<font[\s\S]*?>(.*?)<\/font>/, res.data);
-        const msg = err.indexOf("!!") > -1 ? "验证码错误" : "账号或密码错误";
+        console.log("错误信息解析结果:", err);
+        const msg = err && err.indexOf("!!") > -1 ? "验证码错误" : "账号或密码错误";
         return { status: 2, msg };
       }
     })
     .catch(error => {
+      console.log("登录请求失败，错误:", error);
       if (error && /domain list/.test(error.errMsg)) {
         return { status: 1, msg: "" };
       }
@@ -38,4 +45,4 @@ export const requestForVerifyCode = () => {
     url: SW_HOST + "verifycode.servlet",
     responseType: "arraybuffer",
   }).then(res => res.data);
-}; 
+};
